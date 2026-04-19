@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 from config import Config
 from database.db import db
 from services.simulation import BatterySimulator
@@ -22,6 +23,9 @@ CORS(app)
 
 # Initialize JWT
 jwt = JWTManager(app)
+
+# Initialize Mail
+mail = Mail(app)
 
 # Initialize DB
 db.init_app(app)
@@ -47,12 +51,12 @@ def server_error(e):
 with app.app_context():
     # Create tables if they don't exist
     db.create_all()
-    print("[\u2713] Database initialized")
+    print("[SUCCESS] Database initialized")
 
 # Start background battery simulator
 simulator = BatterySimulator(app)
 simulator.start()
 
 if __name__ == '__main__':
-    print("[\u2713] Starting Server...")
+    print("[SUCCESS] Starting Server...")
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=True)

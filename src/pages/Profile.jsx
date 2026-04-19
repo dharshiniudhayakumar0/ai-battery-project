@@ -105,11 +105,15 @@ const Profile = () => {
       addAlert("Profile updated successfully", "success");
       setIsEditing(false);
       // Sync local storage too
-      localStorage.setItem('loginUser', JSON.stringify({
+      const updatedProfile = {
         ...JSON.parse(localStorage.getItem('loginUser') || '{}'),
         ...profile
-      }));
-      setTimeout(fetchData, 500);
+      };
+      localStorage.setItem('loginUser', JSON.stringify(updatedProfile));
+      
+      // Update global auth state if applicable
+      // Explicitly fetch again to confirm server state
+      setTimeout(fetchData, 300);
     } catch (err) {
       addAlert("Failed to update profile: " + (err.response?.data?.message || err.message), "error");
     } finally {

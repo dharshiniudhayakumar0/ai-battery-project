@@ -16,7 +16,7 @@ class BatterySimulator:
             self.thread = threading.Thread(target=self._simulate_loop)
             self.thread.daemon = True
             self.thread.start()
-            print("[\u2713] Battery Data Simulator started")
+            print("[SUCCESS] Battery Data Simulator started")
             
     def stop(self):
         self.running = False
@@ -48,12 +48,19 @@ class BatterySimulator:
                 db.session.add(new_data)
                 
                 # Alerts logic
+                from services.notifications import send_alert_email
+
                 if health < 30.0:
-                    alert = Alert(device_id=device.id, message=f"[Simulated] Critical Health: {health}%")
+                    msg = f"[Simulated] Critical Health: {health}%"
+                    alert = Alert(device_id=device.id, message=msg)
                     db.session.add(alert)
+                    send_alert_email(device.id, device.name, msg)
+
                 if temperature > 45.0:
-                    alert = Alert(device_id=device.id, message=f"[Simulated] High Temperature: {temperature}°C")
+                    msg = f"[Simulated] High Temperature: {temperature}°C"
+                    alert = Alert(device_id=device.id, message=msg)
                     db.session.add(alert)
+                    send_alert_email(device.id, device.name, msg)
                     
                 db.session.commit()
                 # Uncomment to debug:

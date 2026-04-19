@@ -66,29 +66,73 @@ def login():
 
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
-    print(f"DEBUG: /send-otp request received. Data: {request.data}", flush=True)
     try:
         data = request.get_json()
-        print(f"DEBUG: Parsed JSON data: {data}", flush=True)
-        phone_number = data.get('phone_number') if data else None
+        phone_number = data.get('phone_number')
+        email = data.get('email') # Check if email is provided directly or find by phone
         
-        if not phone_number:
-            return jsonify({"message": "Phone number is required"}), 400
+        if not phone_number and not email:
+            return jsonify({"message": "Phone number or Email is required"}), 400
             
-        # Generate fixed OTP for easy user testing
-        otp = "123456"
-        otp_store[phone_number] = otp
+        # If only phone provided, try to find the user's email
+        if not email and phone_number:
+            user = User.query.filter_by(phone_number=phone_number).first()
+            if user:
+                email = user.email
         
-        # Print to backend terminal for testing (PROMINENT LOGGING)
+        if not email:
+            return jsonify({"message": "No email address found for this user/number. Please use Email for OTP."}), 400
+
+        # Generate REAL random OTP
+        otp = generate_otp()
+        otp_store[phone_number or email] = otp
+        
+        # Send Real Email
+        try:
+            msg = Message(
+                subject="AI Battery System - OTP Verification",
+                recipients=[email],
+                body=f"Your OTP code for the AI-Based Battery Health Prediction System is: {otp}\n\nThis code will expire shortly."
+            )
+            # Use the mail instance from app extensions
+            mail = current_app.extensions.get('mail')
+            if mail:
+                mail.send(msg)
+                print(f"[SUCCESS] Real OTP Email sent to {email}")
+            else:
+                print("[!] Mail server not initialized. Check app.py.")
+        except Exception as mail_err:
+            print(f"[!] Failed to send email: {str(mail_err)}")
+        
+        # Send Real SMS (Twilio)
+        try:
+            sid = os.environ.get('TWILIO_ACCOUNT_SID')
+            token = os.environ.get('TWILIO_AUTH_TOKEN')
+            from_phone = os.environ.get('TWILIO_PHONE_NUMBER')
+            
+            if sid and token and from_phone and phone_number:
+                from twilio.rest import Client
+                client = Client(sid, token)
+                client.messages.create(
+                    body=f"Your AI Battery OTP is: {otp}. Valid for 10 minutes.",
+                    from_=from_phone,
+                    to=phone_number
+                )
+                print(f"[SUCCESS] Real OTP SMS sent to {phone_number}")
+        except Exception as sms_err:
+            print(f"[!] Failed to send SMS: {str(sms_err)}")
+        
+        # Keep console log for easy development testing
         print("\n" + "="*50)
-        print(f"!!! SECURITY ALERT: SIMULATED OTP CREATED !!!")
-        print(f"Target Number: {phone_number}")
+        print(f"!!! REAL OTP DISPATCHED !!!")
+        print(f"Target: {email} / {phone_number}")
         print(f"OTP CODE: {otp}")
-        print("Enter this code in your browser.")
         print("="*50 + "\n", flush=True)
         
-        return jsonify({"message": "OTP sent successfully"}), 200
+        return jsonify({"message": "OTP sent successfully (Email/SMS)"}), 200
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 @auth_bp.route('/verify-otp', methods=['POST'])

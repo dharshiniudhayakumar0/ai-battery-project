@@ -30,12 +30,23 @@ def add_battery_data():
         db.session.add(new_data)
         
         # Check alerts
+        from services.notifications import send_alert_email
+        from database.models import Device
+        
+        device = db.session.get(Device, device_id)
+        device_name = device.name if device else f"Device {device_id}"
+
         if health < HEALTH_THRESHOLD:
-            alert = Alert(device_id=device_id, message=f"Critical Health: {health}%")
+            msg = f"Critical Health: {health}%"
+            alert = Alert(device_id=device_id, message=msg)
             db.session.add(alert)
+            send_alert_email(device_id, device_name, msg)
+            
         if temperature > TEMP_THRESHOLD:
-            alert = Alert(device_id=device_id, message=f"High Temperature: {temperature}°C")
+            msg = f"High Temperature: {temperature}°C"
+            alert = Alert(device_id=device_id, message=msg)
             db.session.add(alert)
+            send_alert_email(device_id, device_name, msg)
             
         db.session.commit()
         

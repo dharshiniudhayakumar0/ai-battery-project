@@ -52,8 +52,11 @@ const Login = () => {
           phone_number: formData.phone,
           company_name: formData.company
         });
-        await api.post('/api/send-otp', { phone_number: formData.phone });
-        addAlert('OTP sent to your phone (Check terminal)', 'info');
+        await api.post('/api/send-otp', { 
+          phone_number: formData.phone,
+          email: formData.email 
+        });
+        addAlert('Registration successful! OTP sent to your email', 'success');
         setIsOTPStep(true);
       } catch (err) {
         addAlert(err.response?.data?.message || err.message, 'error');
@@ -139,7 +142,7 @@ const Login = () => {
             {isOTPStep ? 'Authenticator' : (isRegistering ? 'Register Fleet' : 'Sign In')}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-            {isOTPStep ? 'Enter the code sent to your terminal' : 
+            {isOTPStep ? 'Enter the code sent to your email' : 
              (isRegistering ? 'Start monitoring your battery health' : 'Enter your credentials to access insights')}
           </p>
         </div>

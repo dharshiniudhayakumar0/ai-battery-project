@@ -32,12 +32,20 @@ const OTPVerification = () => {
       if (res.data.success) {
         addAlert('OTP Verified successfully', 'success');
         
-        const savedUser = JSON.parse(localStorage.getItem('loginUser'));
-        if (savedUser) {
-          login(savedUser);
-        } else {
-          login({ username: 'User', role: 'Admin' });
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
         }
+
+        const userData = {
+          username: res.data.username || 'User',
+          email: res.data.email,
+          phone_number: res.data.phone_number || phone,
+          company_name: res.data.company_name,
+          role: 'Admin'
+        };
+        
+        localStorage.setItem('loginUser', JSON.stringify(userData));
+        login(userData);
         
         if (triggerLoginVoiceAlert) {
           triggerLoginVoiceAlert();

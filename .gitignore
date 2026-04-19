@@ -32,6 +32,7 @@ venv/
 
 # Database
 backend/*.db
+backend/.env
 backend/output.txt
 backend/traceback.txt
 backend/traceback_output.txt
