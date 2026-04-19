@@ -13,10 +13,12 @@ def send_alert_email(device_id, device_name, alert_message, target_email=None, t
     # 0. Check Cooldown (Rate Limiting)
     try:
         cooldown_time = datetime.utcnow() - timedelta(hours=24)
-        # Check if an alert with this message was already sent for this device in the last 24h
+        # Check if any alert was sent for this device in the last 24h
+        # We check by the 'type' of alert (Health vs Temperature)
+        alert_type = "Health" if "Health" in alert_message else "Temperature"
         recent_alert = Alert.query.filter(
             Alert.device_id == device_id,
-            Alert.message == alert_message,
+            Alert.message.like(f"%{alert_type}%"),
             Alert.timestamp > cooldown_time
         ).first()
         
