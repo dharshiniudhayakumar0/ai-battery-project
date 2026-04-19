@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Base at the root and use explicit /api/ in all calls for clarity and consistency
-  baseURL: `http://${window.location.hostname}:5000`,
+  // Use VITE_API_URL from environment variables (Vercel/Render)
+  // Fallback to localhost for local development
+  baseURL: import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`,
   headers: {
     'Content-Type': 'application/json',
   },
