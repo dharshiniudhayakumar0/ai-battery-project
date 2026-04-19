@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Barcodes for Scanning</title>
+    <style>
+        body {
+            background-color: #e2e8f0; /* Light gray background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            gap: 40px;
+        }
+        .header {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        .barcode-card {
+            background-color: #ffffff; /* Pure white background for the barcode */
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .barcode-card h2 {
+            margin-top: 0;
+            color: #334155;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .barcode-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .barcode-image {
+            display: inline-block;
+            padding: 16px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            image-rendering: pixelated; /* Keeps it sharp */
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Smart QR Codes for Testing</h1>
+        <p>Open your "Add Device" page and scan these codes below.</p>
+    </div>
+
+    <!-- Barcode 1 -->
+    <div class="barcode-card">
+        <h2>Medical Unit Battery</h2>
+        <p>Pre-filled with: Healthcare, Outdoor Hub, Solid State</p>
+        <div class="barcode-image">
+            <img src="https://bwipjs-api.metafloor.com/?bcid=qrcode&text=%7B%22id%22%3A%22MED-BAT-909%22%2C%22name%22%3A%22MRI%20Backup%20Unit%22%2C%22type%22%3A%22Solid%20State%20Battery%22%2C%22industry%22%3A%22Healthcare%22%2C%22environment%22%3A%22Outdoor%20Hub%22%7D&scale=8&bgcolor=ffffff" alt="Medical QR Code" />
+        </div>
+    </div>
+
+    <!-- Barcode 2 -->
+    <div class="barcode-card">
+        <h2>Data Center Rack Pack</h2>
+        <p>Pre-filled with: Data Center, Zone A, LiPo</p>
+        <div class="barcode-image">
+            <img src="https://bwipjs-api.metafloor.com/?bcid=qrcode&text=%7B%22id%22%3A%22DC-UPS-404%22%2C%22name%22%3A%22Server%20Rack%20B4%22%2C%22type%22%3A%22Lithium%20Polymer%20(LiPo)%22%2C%22industry%22%3A%22Data%20Center%22%2C%22environment%22%3A%22Zone%20A%20-%20High%20Temp%22%7D&scale=8&bgcolor=ffffff" alt="Data Center QR Code" />
+        </div>
+    </div>
+
+</body>
+</html>
