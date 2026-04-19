@@ -39,6 +39,18 @@ app.register_blueprint(alert_bp, url_prefix='/api/alerts')
 app.register_blueprint(export_bp, url_prefix='/api')
 app.register_blueprint(health_calc_bp, url_prefix='/api')
 
+@app.route('/')
+def home():
+    return jsonify({
+        "status": "Online",
+        "message": "AI Battery Monitoring System Backend is running!",
+        "version": "1.0.0"
+    }), 200
+
+@app.route('/api/test-api')
+def test_api():
+    return jsonify({"success": True, "message": "API connectivity verified!"}), 200
+
 # Global error handler
 @app.errorhandler(404)
 def not_found(e):
